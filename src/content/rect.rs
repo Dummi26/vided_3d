@@ -21,19 +21,23 @@ impl Drawable for Rect {
     fn get_intersection(&self, ray: &Line) -> Option<(f64, PointRayProperties)> {
         // find the height of the ray's base over the plane (the rectangle, if it was infinitely big)
         //  get the normal vector of the plane where normal_vec.len() == 1.0
+        //  the normal vector points in the direction from where the rectangle can be seen.
         let normal_vec = (&self.down ^ &self.right).normalized();
         //  get the vector from the ray's base to any point on the plane
         let from_ray_to_plane = &self.center - &ray.base;
         //  get the distance from the ray's base to the plane (the "height" of the point above the plane)
+        //  if normal_vec points in the opposite direction of from_ray_to_plane, height is negative.
         let height = &from_ray_to_plane * &normal_vec;
         if height.is_sign_positive() {
+            // rectangle is invisible from x-angles outside of +-PI ("from behind")
             return None;
         }
         let height = height.abs();
         // find the intersection
         //  find cos(alpha) using vector properties (normal vector has length 1)
+        //  because normal_vec points in opposite direction to ray.dir, this must be negative.
         let cos = (&normal_vec * &ray.dir) / ray.dir.len();
-        if cos != 0.0 {
+        if cos < 0.0 {
             //  the distance along the vector increases the smaller the cosine of the angle gets (-> approaching 90° between ray and normal vector -> ray || plane -> no intersection, infinite distance)
             let dist = height / cos.abs();
             let intersection_point = &ray.base + &(&ray.dir * dist);
@@ -57,10 +61,7 @@ impl Drawable for Rect {
             //  This new point is where the mirrored vector points to.
             //  Note that, because the ray needs to be inverted, there is a + inside the brackets where a - would be expected.
             let reflect_vector = &mirror_vec + &(&mirror_vec + &ray.dir);
-            let mut mat = self.material.clone();
-            mat.emittance.r = (1.0 + intersection_coord.0) / 2.0;
-            mat.emittance.g = (1.0 + intersection_coord.1) / 2.0;
-            mat.emittance.b = 0.2;
+            let mat = self.material.clone();
             Some((
                 dist,
                 PointRayProperties {

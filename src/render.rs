@@ -83,15 +83,16 @@ impl Renderer {
         };
 
         for hit in hit_properties {
+            if strength.r.max(strength.g).max(strength.b) < 0.002 {
+                break;
+            };
             // emittance
             let emittance = &hit.1.light_properties.emittance * &strength;
-            color += emittance;
+            color += &emittance;
             // transparency
-            if hit.1.light_properties.transparency.a.is_normal() { // not 0.0 or any invalid value (also ignores subnormals, but this shouldn't matter)
-                 // let transparency = &hit.1.light_properties.transparency * &strength;
-                 // hit.1.orientation
-                 // TODO
-            }
+            //  not 0.0 or any invalid value (also ignores subnormals, but this shouldn't matter)
+            //  strength gets weaker
+            strength *= &hit.1.light_properties.transparency;
             // TODO
             // reflection
             // scattering

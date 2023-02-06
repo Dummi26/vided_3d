@@ -13,49 +13,137 @@ mod pos;
 mod render;
 
 fn main() {
-    let renderer = Renderer::new(vec![Arc::new(content::rect::Rect {
-        center: Vector {
-            x: 2.5,
-            y: 0.0,
-            z: 0.0,
-        },
-        down: Vector {
-            x: 0.0,
-            y: 0.0,
-            z: -0.5,
-        },
-        right: Vector {
-            x: 0.0,
-            y: 1.0,
-            z: 0.0,
-        },
-        material: PointLightProperties {
-            reflectiveness: Color {
-                r: 0.0,
-                g: 0.0,
-                b: 0.0,
-                a: 0.0,
+    let renderer = Renderer::new(vec![
+        Arc::new(content::rect::Rect {
+            center: Vector {
+                x: 2.5,
+                y: 0.0,
+                z: 0.0,
             },
-            transparency: Color {
-                r: 0.0,
-                g: 0.0,
-                b: 0.0,
-                a: 0.0,
+            down: Vector {
+                x: 0.0,
+                y: 0.0,
+                z: -0.5,
             },
-            emittance: Color {
-                r: 1.0,
-                g: 1.0,
-                b: 1.0,
-                a: 0.0,
+            right: Vector {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
             },
-            scattering: Color {
-                r: 0.0,
-                g: 0.0,
-                b: 0.0,
-                a: 0.0,
+            material: PointLightProperties {
+                reflectiveness: Color {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 0.0,
+                    a: 0.0,
+                },
+                transparency: Color {
+                    r: 0.5,
+                    g: 0.5,
+                    b: 0.5,
+                    a: 0.0,
+                },
+                emittance: Color {
+                    r: 0.5,
+                    g: 0.0,
+                    b: 0.0,
+                    a: 0.0,
+                },
+                scattering: Color {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 0.0,
+                    a: 0.0,
+                },
             },
-        },
-    })]);
+        }),
+        Arc::new(content::rect::Rect {
+            center: Vector {
+                x: 3.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            down: Vector {
+                x: 0.0,
+                y: 0.0,
+                z: -0.5,
+            },
+            right: Vector {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            material: PointLightProperties {
+                reflectiveness: Color {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 0.0,
+                    a: 0.0,
+                },
+                transparency: Color {
+                    r: 0.5,
+                    g: 0.5,
+                    b: 0.5,
+                    a: 0.0,
+                },
+                emittance: Color {
+                    r: 0.0,
+                    g: 0.5,
+                    b: 0.0,
+                    a: 0.0,
+                },
+                scattering: Color {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 0.0,
+                    a: 0.0,
+                },
+            },
+        }),
+        Arc::new(content::rect::Rect {
+            center: Vector {
+                x: 3.5,
+                y: 0.7,
+                z: -0.6,
+            },
+            down: Vector {
+                x: 0.0,
+                y: 0.0,
+                z: -0.5,
+            },
+            right: Vector {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            material: PointLightProperties {
+                reflectiveness: Color {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 0.0,
+                    a: 0.0,
+                },
+                transparency: Color {
+                    r: 0.5,
+                    g: 0.5,
+                    b: 0.5,
+                    a: 0.0,
+                },
+                emittance: Color {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 0.5,
+                    a: 0.0,
+                },
+                scattering: Color {
+                    r: 0.0,
+                    g: 0.0,
+                    b: 0.0,
+                    a: 0.0,
+                },
+            },
+        }),
+    ]);
 
     let start_time = Instant::now();
     let image = renderer.render(
@@ -64,6 +152,7 @@ fn main() {
             max_light_rays: 0,
         },
         [1920, 1080],
+        // [3, 3],
         Vector {
             x: 0.0,
             y: 0.0,

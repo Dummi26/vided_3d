@@ -60,12 +60,12 @@ impl Add for &Color {
         }
     }
 }
-impl AddAssign for Color {
-    fn add_assign(&mut self, rhs: Self) {
-        self.r += rhs.r;
-        self.g += rhs.g;
-        self.b += rhs.b;
-        self.a += rhs.a;
+impl MulAssign<&Self> for Color {
+    fn mul_assign(&mut self, rhs: &Self) {
+        self.r *= rhs.r;
+        self.g *= rhs.g;
+        self.b *= rhs.b;
+        self.a *= rhs.a;
     }
 }
 impl AddAssign<&Self> for Color {
