@@ -93,8 +93,24 @@ impl Renderer {
             //  not 0.0 or any invalid value (also ignores subnormals, but this shouldn't matter)
             //  strength gets weaker
             strength *= &hit.1.light_properties.transparency;
-            // TODO
             // reflection
+            let reflectiveness = &hit.1.light_properties.reflectiveness;
+            if reflectiveness.r.max(reflectiveness.g).max(reflectiveness.b) > 0.0 {
+                if env.max_light_rays != 0 {
+                    let mut env = env.clone();
+                    env.max_light_rays -= 1;
+                    let hit_pos = &ray.base + &(hit.0 * &ray.dir);
+                    color = self.render_ray(
+                        env,
+                        Line {
+                            base: hit_pos,
+                            dir: hit.1.orientation,
+                        },
+                        color,
+                    );
+                }
+            }
+            // TODO
             // scattering
             // ... (?)
         }

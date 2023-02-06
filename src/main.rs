@@ -14,6 +14,7 @@ mod render;
 
 fn main() {
     let renderer = Renderer::new(vec![
+        // RED
         Arc::new(content::rect::Rect {
             center: Vector {
                 x: 2.5,
@@ -32,15 +33,15 @@ fn main() {
             },
             material: PointLightProperties {
                 reflectiveness: Color {
-                    r: 0.0,
-                    g: 0.0,
-                    b: 0.0,
-                    a: 0.0,
-                },
-                transparency: Color {
                     r: 0.5,
                     g: 0.5,
                     b: 0.5,
+                    a: 0.0,
+                },
+                transparency: Color {
+                    r: 0.3,
+                    g: 0.3,
+                    b: 0.3,
                     a: 0.0,
                 },
                 emittance: Color {
@@ -57,6 +58,7 @@ fn main() {
                 },
             },
         }),
+        // GREEN | behind red
         Arc::new(content::rect::Rect {
             center: Vector {
                 x: 3.0,
@@ -100,11 +102,12 @@ fn main() {
                 },
             },
         }),
+        // BLUE | behind the camera
         Arc::new(content::rect::Rect {
             center: Vector {
-                x: 3.5,
-                y: 0.7,
-                z: -0.6,
+                x: -2.0,
+                y: -0.5,
+                z: 0.25,
             },
             down: Vector {
                 x: 0.0,
@@ -113,7 +116,7 @@ fn main() {
             },
             right: Vector {
                 x: 0.0,
-                y: 1.0,
+                y: -1.0, // because it is behind the camera (rectangles are only visible from one side (might change in the future))
                 z: 0.0,
             },
             material: PointLightProperties {
@@ -149,7 +152,7 @@ fn main() {
     let image = renderer.render(
         RenderEnv {
             frame: 0,
-            max_light_rays: 0,
+            max_light_rays: 1,
         },
         [1920, 1080],
         // [3, 3],
