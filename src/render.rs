@@ -22,6 +22,13 @@ impl Renderer {
         Self { to_render }
     }
 
+    pub fn to_render(&self) -> &Vec<Arc<dyn Drawable>> {
+        &self.to_render
+    }
+    pub fn to_render_mut(&mut self) -> &mut Vec<Arc<dyn Drawable>> {
+        &mut self.to_render
+    }
+
     pub fn render(
         &self,
         env: RenderEnv,
@@ -42,27 +49,18 @@ impl Renderer {
                     z: -dir_y.sin(),
                 };
                 let ray = Line { base: pos, dir };
-                out_img.put_pixel(
-                    x,
-                    y,
-                    self.render_ray(
-                        env.clone(),
-                        ray,
-                        Color {
-                            r: 0.0,
-                            g: 0.0,
-                            b: 0.0,
-                            a: 1.0,
-                        },
-                    )
-                    .u8s()
-                    .into(),
-                );
+                out_img.put_pixel(x, y, self.render_ray(env.clone(), ray).u8s().into());
             }
         }
         out_img
     }
-    pub fn render_ray(&self, env: RenderEnv, ray: Line, mut color: Color) -> Color {
+    pub fn render_ray(&self, env: RenderEnv, ray: Line) -> Color {
+        let mut color = Color {
+            r: 0.0,
+            g: 0.0,
+            b: 0.0,
+            a: 0.0,
+        };
         let mut hit_properties = Vec::new();
         for renderable in &self.to_render {
             if let Some(intersection) = renderable.get_intersection(&ray) {
@@ -100,14 +98,14 @@ impl Renderer {
                     let mut env = env.clone();
                     env.max_light_rays -= 1;
                     let hit_pos = &ray.base + &(hit.0 * &ray.dir);
-                    color = self.render_ray(
-                        env,
-                        Line {
-                            base: hit_pos,
-                            dir: hit.1.orientation,
-                        },
-                        color,
-                    );
+                    color += &(reflectiveness
+                        * &self.render_ray(
+                            env,
+                            Line {
+                                base: hit_pos,
+                                dir: hit.1.orientation,
+                            },
+                        ));
                 }
             }
             // TODO

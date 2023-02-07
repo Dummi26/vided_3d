@@ -16,12 +16,41 @@ pub struct PointRayProperties {
 }
 
 #[derive(Clone)]
-pub struct PointLightProperties {
-    pub emittance: Color,
-    pub transparency: Color,
-    pub reflectiveness: Color,
-    pub scattering: Color,
+pub struct PointLightPropertiesCustomType<T> {
+    pub emittance: T,
+    pub transparency: T,
+    pub reflectiveness: T,
+    pub scattering: T,
 }
+impl<T> PointLightPropertiesCustomType<T>
+where
+    T: Clone,
+{
+    pub fn convert<F, U>(self, f: F) -> PointLightPropertiesCustomType<U>
+    where
+        F: Fn(T) -> U,
+    {
+        PointLightPropertiesCustomType {
+            emittance: f(self.emittance),
+            transparency: f(self.transparency),
+            reflectiveness: f(self.reflectiveness),
+            scattering: f(self.scattering),
+        }
+    }
+    pub fn convert_ref<F, U>(&self, f: F) -> PointLightPropertiesCustomType<U>
+    where
+        F: Fn(&T) -> U,
+    {
+        PointLightPropertiesCustomType {
+            emittance: f(&self.emittance),
+            transparency: f(&self.transparency),
+            reflectiveness: f(&self.reflectiveness),
+            scattering: f(&self.scattering),
+        }
+    }
+}
+
+pub type PointLightProperties = PointLightPropertiesCustomType<Color>;
 
 #[derive(Clone)]
 pub struct Color {
@@ -40,6 +69,14 @@ impl Color {
         }
     }
 
+    pub fn from_u8s(u8s: [u8; 4]) -> Self {
+        Self {
+            r: u8s[0] as f64 / 255.0,
+            g: u8s[1] as f64 / 255.0,
+            b: u8s[2] as f64 / 255.0,
+            a: u8s[3] as f64 / 255.0,
+        }
+    }
     pub fn u8s(&self) -> [u8; 4] {
         [
             (self.r.max(0.0).min(1.0) * 255.0) as u8,

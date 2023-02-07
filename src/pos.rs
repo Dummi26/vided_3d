@@ -18,12 +18,24 @@ impl Vector {
         (self.x * self.x + self.y * self.y + self.z * self.z).sqrt()
     }
 
+    pub fn len_sq(&self) -> f64 {
+        self.x * self.x + self.y * self.y + self.z * self.z
+    }
+
     pub fn normalized(&self) -> Vector {
         let len = self.len();
         Vector {
             x: self.x / len,
             y: self.y / len,
             z: self.z / len,
+        }
+    }
+    pub fn with_len(&self, len: f64) -> Vector {
+        let f = len / self.len();
+        Vector {
+            x: self.x * f,
+            y: self.y * f,
+            z: self.z * f,
         }
     }
 }
@@ -111,7 +123,7 @@ impl BitXor for &Vector {
     type Output = Vector;
     fn bitxor(self, rhs: Self) -> Self::Output {
         Self::Output {
-            x: self.y * rhs.z - self.z - rhs.y,
+            x: self.y * rhs.z - self.z * rhs.y,
             y: self.z * rhs.x - self.x * rhs.z,
             z: self.x * rhs.y - self.y * rhs.x,
         }
