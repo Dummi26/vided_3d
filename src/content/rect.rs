@@ -57,7 +57,7 @@ impl Drawable for Rect {
         // find the intersection
         //  find cos(alpha) using vector properties (normal vector has length 1)
         //  because normal_vec points in opposite direction to ray.dir, this must be negative.
-        let cos = (&normal_vec * &ray.dir) / ray.dir.len();
+        let cos = &normal_vec * &ray.dir;
         if cos < 0.0 {
             //  the distance along the vector increases the smaller the cosine of the angle gets (-> approaching 90° between ray and normal vector -> ray || plane -> no intersection, infinite distance)
             let dist = height / cos;
