@@ -43,9 +43,6 @@ impl RectMaterialProperty {
 }
 
 impl Drawable for Rect {
-    fn get_outer_bounds(&self) -> (Vector, f64) {
-        (self.center.clone(), (&self.down + &self.right).len())
-    }
     fn get_intersection(&self, ray: &Line) -> Option<(f64, PointRayProperties)> {
         // find the height of the ray's base over the plane (the rectangle, if it was infinitely big)
         //  get the normal vector of the plane where normal_vec.len() == 1.0
@@ -91,6 +88,23 @@ impl Drawable for Rect {
                 dist,
                 PointRayProperties {
                     orientation: reflect_vector,
+                    scattering_orientations: {
+                        if mat.scattering.is_transparent() {
+                            vec![]
+                        } else {
+                            let mut vecs = Vec::new();
+                            for angle in 0..10 {
+                                let angle = std::f64::consts::PI * angle as f64 / 5.0;
+                                let angle_vector = &self.right.with_len(dist * angle.cos())
+                                    + &self.down.with_len(dist * angle.sin());
+                                for dist in 0..8 {
+                                    let dist = dist as f64 / 4.0;
+                                    vecs.push(&angle_vector.with_len(dist * dist) + &normal_vec);
+                                }
+                            }
+                            vecs
+                        }
+                    },
                     light_properties: mat,
                 },
             ))
